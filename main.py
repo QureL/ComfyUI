@@ -186,6 +186,13 @@ def load_extra_path_config(yaml_path):
                 logging.info("Adding extra search path {} {}".format(x, full_path))
                 folder_paths.add_model_folder_path(x, full_path)
 
+def init_signal_callback():
+    import signal
+    from nodes import load_custom_nodes
+    def callback(*args, **kwargs):
+        load_custom_nodes()
+    signal.signal(signal.SIGUSR1, callback)
+
 
 if __name__ == "__main__":
     if args.temp_directory:
@@ -215,6 +222,7 @@ if __name__ == "__main__":
             load_extra_path_config(config_path)
 
     init_custom_nodes()
+    init_signal_callback()
 
     cuda_malloc_warning()
 
